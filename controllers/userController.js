@@ -165,8 +165,13 @@ export const login = async (req, res) => {
     if (!isPasswordCorrect)
       return res.status(400).json({ message: "Invalid credentials." });
 
-    // check if the email is verified
     if (data) {
+      token = createToken({
+        id: data.id,
+        email: data.email,
+        role: data.role.nameEn,
+      });
+
       if (!data.isVerified) {
         userNodemailer({
           email: email,
@@ -179,13 +184,6 @@ export const login = async (req, res) => {
           .json({ message: `Email is not verified to verify check ${email}.` });
       }
     }
-
-    if (data)
-      token = createToken({
-        id: data.id,
-        email: data.email,
-        role: data.role.nameEn,
-      });
 
     return res.status(200).json({
       data: data,
